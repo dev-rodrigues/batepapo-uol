@@ -1,10 +1,8 @@
-import socket, pickle, threading
-import time, os, platform, subprocess
+import socket, pickle, threading, os
 from datetime import datetime
 
 os.system('cls' if os.name == 'nt' else 'clear')
 print('BATE PAPO DA UOL ONLINE')
-
 
 porta = 8080
 
@@ -35,13 +33,27 @@ def get_response():
 
   return response
 
+def remove_connection(host, port):
+  for n in range(0, len(pool['connections'])):
+    if pool['connections'][n][3] == host and pool['connections'][n][4] == port:
+      del(pool['connections'][n])
+
 def get_request_send_response(client, server, host, port):
   while True:
-    msg = client.recv(5000)
+    msg = ''
+    decode = ''
     response = 'NoNe'
-    decode = msg.decode('ascii')
+
+    try:
+      msg = client.recv(5000)
+      decode = msg.decode('ascii')
+    except:
+      print('UNEXPECTED ERROR, CONNECTION BROKEN')
+      remove_connection(host, port)
+      break
 
     request = decode.split('-')
+    
     try:
       if int(request[0]) == 4:
         break

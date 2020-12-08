@@ -1,4 +1,4 @@
-import socket, time, pickle, os
+import socket, pickle, os
 
 # Cria o socket
 socket_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

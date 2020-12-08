@@ -1,10 +1,10 @@
-import socket, time, pickle, os
+import socket, pickle, os
 
 # Cria o socket
 socket_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
-    socket_client.connect((socket.gethostname(), 8080))
+    socket_client.connect((socket.gethostname(), 8082))
 except:
     print('ERRO AO CONECTAR COM O SERVIDOR')
     os._exit(1)
