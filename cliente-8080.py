@@ -4,7 +4,7 @@ import socket, pickle, os
 socket_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
-    socket_client.connect((socket.gethostname(), 8082))
+    socket_client.connect(("192.168.0.12", 8080))
 except:
     print('ERRO AO CONECTAR COM O SERVIDOR')
     os._exit(1)

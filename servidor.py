@@ -1,10 +1,12 @@
 import socket, pickle, threading, os
 from datetime import datetime
+# luiz.maia@prof.infnet.edu.br
 
 os.system('cls' if os.name == 'nt' else 'clear')
 print('BATE PAPO DA UOL ONLINE')
 
 porta = 8080
+host  = "192.168.0.12"
 
 pool = {
   'connections': [],
@@ -12,19 +14,16 @@ pool = {
 }
 
 def criar_conexao():
-  global porta, pool
+  global porta, host, pool
 
-  socket_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
-  host = socket.gethostname()
-  socket_server.bind((host, porta))
-  socket_server.listen()
+  with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as socket_server:
+    socket_server.bind((host, porta))
+    socket_server.listen()    
+    print("Servidor de nome:", host, " - Aguardando conexão na porta:", porta)
 
-  print("Servidor de nome:", host, " - Aguardando conexão na porta:", porta)
-  (socket_client,addr) = socket_server.accept()
-  print("Conectado a:", str(addr))
-
-  pool['connections'].append([socket_client, socket_server, False, host, porta])
-  porta = porta + 1
+    conexao, ender = socket_server.accept()
+    
+  pool['connections'].append([conexao, socket_server, False, ender])
 
 def get_response():
   response = []
@@ -53,7 +52,7 @@ def get_request_send_response(client, server, host, port):
       break
 
     request = decode.split('-')
-    
+
     try:
       if int(request[0]) == 4:
         break
@@ -63,7 +62,8 @@ def get_request_send_response(client, server, host, port):
 
         response = []
         for connection in connections:
-          response.append([connection[3], connection[4]])
+          conn = connection[3]
+          response.append(conn)
 
       elif int(request[0]) == 2:
         post = Post(request[1], host, port)
@@ -130,8 +130,8 @@ t.start()
 while True:
   for connection in pool['connections']:
     connected = connection[2]
-    host = connection[3]
-    port = connection[4]
+    host = connection[3][0]
+    port = connection[3][1]
 
     if not connected:
       server = connection[1]
